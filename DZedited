@@ -1,0 +1,448 @@
+//izvinite
+#include "stdafx.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string>
+#include <iostream>
+#include <memory>
+#include <vector>
+#include <fstream>
+
+using namespace std;
+class History;
+class Employee;
+class Door;
+class Zone;
+
+class History {
+public:
+    int EmployeeH;
+    int DoorH;
+    int Access;
+};
+
+class Employee {
+public:
+    int EmplNumber;
+    int Category;
+};
+
+class Door {
+public:
+    int DoorNumber;
+    int DoorCategory;
+    int DoorZone;
+};
+
+class Zone {
+    int ZoneNumber;
+    int ZoneCategory;
+};
+
+class Engine {
+    vector <Employee> empls;
+    vector <Door> doors;
+    vector <Zone> zones;
+    vector <History> history;
+
+public:
+    void save()
+    {
+        ofstream fout("savefile.txt"); //Z
+        for (int i = 0; i < zones.size(); i++)
+        {
+            fout << zones[i].ZoneNumber << "-" << zones[i].ZoneCategory << " ";
+        }
+        fout << endl; //D
+        for (int i = 0; i < doors.size(); i++)
+        {
+            fout << doors[i].DoorNumber << "-" << doors[i].DoorCategory << "-" << doors[i].DoorZone << " ";
+        }
+        fout << endl; //E
+        for (int i = 0; i < empls.size(); i++)
+        {
+            fout << empls[i].EmplNumber << "-" << empls[i].Category << " ";
+        }
+
+        fout.close();
+    }
+    void load()
+    {
+        //wip
+    }
+
+    void cutzone()
+    {
+        vector <int> f;
+        Zone Z; int n, m, k, count;
+        cout << "Enter zone number:";
+        cin >> n;
+        cout << "Enter amount of new zones:";
+        cin >> m;
+        for (int i = 0; i < m; i++)
+        {
+            cout << "Enter new zone (" << i+1 << "/" << m << ") number:";
+            cin >> k;
+            for (int i = 0; i < zones.size(); i++)
+            {
+                if (zones[i].ZoneNumber == k)
+                {
+                    cout << "Zone with this ID number already exists!" << endl;
+                    count = 1;
+                }
+            }
+            if (count == 0)
+            {
+                Z.ZoneNumber = k;
+                Z.ZoneCategory = getzonecat(n);
+                zones.push_back(Z);
+                f.push_back(k);
+            }
+            count = 0;
+        }
+        for (int i = 0; i < doors.size(); i++)
+        {
+            if (doors[i].DoorZone == n)
+            {
+                cout << "Enter new zone for door " << doors[i].DoorNumber << ":";
+                cin >> k;
+                for (int i = 0; i < f.size(); i++)
+                {
+                    if (f[i] == k)
+                    {
+                        doors[i].DoorZone = k;
+                    }
+                }
+            }
+        }
+
+    }
+
+    void addzone()
+    {
+        Zone Z; int n; int count = 0;
+        cout << "Enter zone number:";
+        cin >> n;
+        for (int i = 0; i < zones.size(); i++)
+        {
+            if (zones[i].ZoneNumber == n)
+            {
+                cout << "Zone with this ID number already exists!" << endl;
+                count = 1;
+            }
+        }
+        if (count == 0)
+        {
+            Z.ZoneNumber = n;
+            cout << "Enter zone category:";
+            cin >> n;
+            Z.ZoneCategory = n;
+            zones.push_back(Z);
+        }
+        count = 0;
+    }
+
+    void delzone()
+    {
+        Zone Z; int n;
+        cout << "Enter zone number:";
+        cin >> n;
+        for (int i = 0; i < zones.size(); i++)
+        {
+            if (zones[i].ZoneNumber == n)
+            {
+                zones.erase(zones.begin() + i);
+            }
+        }
+    }
+
+    void deldoor()
+    {
+        Door D; int n;
+        cout << "Enter zone number:";
+        cin >> n;
+        for (int i = 0; i < doors.size(); i++)
+        {
+            if (doors[i].DoorNumber == n)
+            {
+                doors.erase(doors.begin() + i);
+            }
+        }
+    }
+
+    int getzonecat(int n)
+    {
+        for (int i = 0; i < zones.size(); i++)
+        {
+            if (zones[i].ZoneNumber == n)
+            {
+                return zones[i].ZoneCategory;
+            }
+        }
+    }
+
+    int getdoorcat(int n)
+    {
+        for (int i = 0; i < doors.size(); i++)
+        {
+            if (doors[i].DoorNumber == n)
+            {
+                return doors[i].DoorCategory;
+            }
+        }
+    }
+
+    void adddoor()
+    {
+
+        Door D; int n; int count = 0;
+        cout << "Enter door number:";
+        cin >> n;
+        for (int i = 0; i < doors.size(); i++)
+        {
+            if (doors[i].DoorNumber == n)
+            {
+                cout << "Door with this ID number already exists!" << endl;
+                count = 1;
+            }
+        }
+        if (count == 0)
+        {
+            D.DoorNumber = n;
+            cout << "Enter zone number for door:";
+            cin >> n;
+            for (int i = 0; i < zones.size(); i++)
+            {
+                if (zones[i].ZoneNumber == n)
+                {
+                    D.DoorZone = n;
+                    D.DoorCategory = getzonecat(n);
+                    doors.push_back(D);
+                }
+
+            }
+            count = 0;
+        }
+    }
+
+    void listzone()
+    {
+        cout << "Zones: \n";
+        cout << "Zone - Category \n";
+        for (int i = 0; i < zones.size(); i++)
+        {
+            cout << zones[i].ZoneNumber << " " << zones[i].ZoneCategory << endl;
+        }
+    }
+
+    void listdoor()
+    {
+        int n;
+        cout << "Enter zone number:";
+        cin >> n;
+        for (int i = 0; i < zones.size(); i++)
+        {
+            if (zones[i].ZoneNumber == n)
+            {
+                for (int i = 0; i < doors.size(); i++)
+                {
+                    if (doors[i].DoorZone = zones[i].ZoneNumber)
+                    {
+                        cout << doors[i].DoorNumber << ", ";
+                    }
+                }
+            }
+        }
+    }
+    void addhist(int a, int b, int c)
+    {
+        History H;
+        H.EmployeeH = a;
+        H.DoorH = b;
+        H.Access = c;
+        history.push_back(H);
+    }
+
+    void listhist()
+    {
+        for (int i = 0; i < history.size(); i++)
+        {
+            string h;
+            if (history[i].Access == 0) h = "ACCESS DENIED";
+            if (history[i].Access == 1) h = "SUCCESS";
+            cout << history[i].EmployeeH << "->" << history[i].DoorH << " - " << h << "\n";
+        }
+    }
+
+
+    void addemp()
+    {
+        Employee E; int n; int count = 0;
+        cout << "Enter employee number:";
+        cin >> n;
+        for (int i = 0; i < empls.size(); i++)
+        {
+            if (empls[i].EmplNumber == n)
+            {
+                cout << "Employee with this ID number already exists!" << endl;
+                count = 1;
+            }
+        }
+        if (count == 0)
+        {
+            E.EmplNumber = n;
+            cout << "Enter employee category:";
+            cin >> n;
+            E.Category = n;
+            empls.push_back(E);
+        }
+        count = 0;
+    }
+
+    void listemp()
+    {
+        cout << "Employers: \n";
+        cout << "EmpNumber - Category \n";
+        for (int i = 0; i < empls.size(); i++)
+        {
+            cout << empls[i].EmplNumber << " " << empls[i].Category << endl;
+        }
+    }
+
+    void delemp()
+    {
+        Employee E; int n;
+        cout << "Enter employee number:";
+        cin >> n;
+        for (int i = 0; i < empls.size(); i++)
+        {
+            if (empls[i].EmplNumber == n)
+            {
+                empls.erase(empls.begin() + i);
+            }
+        }
+    }
+
+    void chgcat()
+    {
+        Employee E; int n;
+        cout << "Enter employee number:";
+        cin >> n;
+        for (int i = 0; i < empls.size(); i++)
+        {
+            if (empls[i].EmplNumber == n)
+            {
+                cout << "Enter new employee category:";
+                cin >> n;
+                empls[i].Category = n;
+            }
+        }
+    }
+
+    int getempcat(int n) {
+        for (int i = 0; i < empls.size(); i++)
+        {
+            if (empls[i].EmplNumber == n)
+            {
+                return empls[i].Category;
+            }
+
+        }
+    }
+};
+
+
+int main()
+{
+    Engine zone;
+    int n; string command;
+    while (command != "end")
+    {
+        cin >> command;
+
+        if (command == "help") {
+            cout << "---EMPLOYEE---" << endl;
+            cout << "addemp - add new employee" << endl;
+            cout << "listemp - list of employers" << endl;
+            cout << "delemp - delete employee" << endl;
+            cout << "chgcat - change access category of employee" << endl;
+            cout << "---ZONES AND DOORS---" << endl;
+            cout << "addzone - add new zone" << endl;
+            cout << "adddoor - add new door to zone" << endl;
+            cout << "listzone - list of zones" << endl;
+            cout << "listdoor - list of doors of zone" << endl;
+            cout << "delzone - delete zone" << endl;
+            cout << "deldoor - delete door" << endl;
+            cout << "---OTHER---" << endl;
+            cout << "trydoor - try door" << endl;
+            cout << "listhist - show history of access" << endl;
+            cout << "save - show history of access" << endl;
+        }
+        //------// Employers commands
+        if (command == "addemp")
+            zone.addemp();
+
+        if (command == "listemp")
+            zone.listemp();
+
+        if (command == "delemp")
+            zone.delemp();
+
+        if (command == "chgcat")
+            zone.chgcat();
+        //------// Zone and doors commands
+        if (command == "addzone")
+            zone.addzone();
+
+        if (command == "adddoor")
+            zone.adddoor();
+
+        if (command == "listzone")
+            zone.listzone();
+
+        if (command == "listdoor")
+            zone.listdoor();
+
+        if (command == "delzone")
+            zone.delzone();
+
+        if (command == "deldoor")
+            zone.deldoor();
+        //------// Access commands
+        if (command == "listhist")
+            zone.listhist();
+
+        if (command == "trydoor")
+        {
+            int g;
+            cout << "Enter employee number:" << endl;
+            cin >> n;
+            cout << "Enter door number:" << endl;
+            cin >> g;
+            if (zone.getdoorcat(g) <= zone.getempcat(n))
+            {
+                cout << "SUCCESS" << endl;
+                zone.addhist(n, g, 1);
+            }
+            else if (zone.getdoorcat(g) > zone.getempcat(n))
+            {
+                cout << "ACCESS DENIED" << endl;
+                zone.addhist(n, g, 0);
+            }
+
+        }
+        //------// txt commands
+        if (command == "save")
+        {
+            zone.save();
+        }
+        if (command == "load")
+        {
+            zone.load();
+        }
+
+    }
+    return 0;
+}
+
+
