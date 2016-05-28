@@ -1,0 +1,55 @@
+//nado dodelat
+#include <iostream>
+#include <thread>
+#include <string>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <map>
+//#include "windows.h"
+using namespace std;
+int count = 0;
+mutex mut;
+
+void tF(string a)
+{
+    for (int i = 0; i < 100; i++) {
+        mut.lock();
+        if ((count < 50) && (a == "aaaaa")) {
+            mut.unlock();
+            i++;
+        }
+
+        if ((count < 50) && (a == "bbbbb")) {
+            for (int i = 0; i < 50; i++) {
+                cout << a << endl;
+                count++;
+            }
+            mut.unlock();
+        }
+
+        if (count >= 50) {
+
+                for (int k = 0; k < 4; k++) {
+
+                    cout << a << endl;
+                }
+                mut.unlock();
+                this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+}
+
+void alarm(int t) {
+    this_thread::sleep_for(std::chrono::seconds(t));
+}
+
+int main() {
+
+    thread thr1(tF, "aaaaa");
+    thread thr2(tF, "bbbbb");
+    thr1.join(); thr2.join();
+
+
+    return 0;
+}
