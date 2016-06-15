@@ -100,7 +100,7 @@ public:
 		}
 	}
 
-	void printFail() {
+	void printFile() {
 		for (File k : files) {
 			cout << k.getName();
 		}
@@ -114,7 +114,7 @@ public:
 		return name;
 	}
 
-	void searchF(string fname, Directory& direct) {
+	void searchFile(string fname, Directory& direct) {
 
 		for (File k : files) {
 			if (k.getName() == fname)
